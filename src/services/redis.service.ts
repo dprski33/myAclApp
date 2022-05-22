@@ -19,18 +19,24 @@ class RedisService {
         }
     }
 
-    async cacheInRedis(type: string, thing: any) {
+    async cacheInRedis(key: string, thing: any) {
         if(!redisClientAvailable) {
-            console.log(`cannot cache '${type}' because redisClientAvailable=${redisClientAvailable}`);
+            console.log(`will not cache '${key}' because redisClientAvailable=${redisClientAvailable}`);
             return null;
         }
         if(redisClientAvailable && redisClient) {
             console.log(`attempting to cache response since redisClientAvailable: ${redisClientAvailable}`);
-            if(!!thing) {
+            if(thing) {
                 //cache the response in redis
-                console.log(`Caching '${type}' data: ${thing.toString()}`);
-                await redisClient.set(type, JSON.stringify(thing));
-                return await redisClient.get(type);
+                console.log(`Caching '${key}' data: ${thing.toString()}`);
+                await redisClient.set(key, JSON.stringify(thing));
+                const redisObj = await redisClient.get(key);
+                if(redisObj?.length == 0)  {
+                    console.log(`Did not proparly cache key ${key}`);
+                    return null;
+                }
+                console.log(`Successfully cached ${key}: ${redisObj}`);
+                return redisObj;
             }
         }
     }

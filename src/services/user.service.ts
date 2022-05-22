@@ -2,7 +2,9 @@ import { response } from "express";
 import {
     getUsers,
     IUserPayload,
-    getUser
+    getUser,
+    createUser,
+    getUserByEmail
 } from "../repositories/user.repository";
 
 class UserService {
@@ -15,6 +17,15 @@ class UserService {
     async readById(id: number) {
         console.log("in user.service looking for user id="+id);
         return getUser(id);
+    }
+
+    async create(body: IUserPayload) {
+        console.log("in user.service creating user");
+        return createUser(body);
+    }
+
+    async readByEmail(email: string) {
+        return getUserByEmail(email);
     }
 }
 
