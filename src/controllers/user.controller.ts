@@ -13,7 +13,7 @@ export default class UserController {
             .then( async function(cachedUsers) {
 
                 //return the redis cache if found
-                if(!!cachedUsers) {
+                if(cachedUsers) {
                     console.log(`cachedUsers: ${JSON.stringify(cachedUsers)}`);
                     return cachedUsers;
                 }
@@ -31,7 +31,7 @@ export default class UserController {
                         //on the off chance we have no users (yet)
                         if(!users) return null;
 
-                        console.log(`users found: ${users[0].email}`);
+                        console.log(`users found: ${users[0]?.email}`);
                         return RedisService.cacheInRedis('users', users)
                             .then( async function(cacheSuccessful) {
                                 if(!!cacheSuccessful) return users;
@@ -82,6 +82,13 @@ export default class UserController {
     @Post("/")
     public async createUser(@Body() body: any) {
         console.log(`in user.controller/post with body=${body}`);
-        return UserService.create(body);
+        return UserService.create(body)
+            .then(function(user) {
+                if(user) {
+                    console.log(`Clearing cache since we added a new user id=${user.id}`);
+                    RedisService.deleteRedisKey('users');
+                }
+                return user;
+            });
     }
 }

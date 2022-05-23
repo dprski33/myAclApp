@@ -33,7 +33,7 @@ import { createClient } from 'redis';
 const redisClient = createClient(redisConfig)
 redisClient.connect()
     .then(obj => {
-        console.log('Redis Connected');
+        console.log(`Redis Connected on url=${redisConfig.url}`);
       })
       .catch(error => {
         console.log('REDIS ERROR:', error);

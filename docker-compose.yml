@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db:
+    container_name: some-postgres2
+    image: postgres:14.2
+    # healthcheck:
+    #   test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+    #   timeout: 45s
+    #   interval: 10s
+    #   retries: 10
+    # restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_DATABASE=dan
+      # - APP_DB_USER=docker
+      # - APP_DB_PASS=docker
+      # - APP_DB_NAME=docker
+    ports:
+      # - '5432:5432'
+      - '5433:5432'
+    volumes: 
+      - ./sql/db.sql:/docker-entrypoint-initdb.d/init.sql
+  cache:
+    container_name: some-redis2
+    image: redis:7.0.0
+    # restart: always
+    environment:
+      - REDISCLI_AUTH=foobared
+    ports:
+      # - '6379:6379'
+      - '6380:6379'
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass foobared --save 20 1 --loglevel debug
+    volumes: 
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./docker/redis.log:/var/log/redis.log
