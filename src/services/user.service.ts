@@ -13,7 +13,7 @@ class UserService {
     
     async list(limit: number, offset: number) {
         console.log(`in user.service looking for users with limit=${limit} and offset=${offset}`);
-        return getUsers(limit, offset);       
+        return getUsers(limit, offset);
     }
 
     async readById(id: number) {
@@ -27,6 +27,7 @@ class UserService {
     }
 
     async readByEmail(email: string) {
+        console.log(`looking for email=${email}`);
         return getUserByEmail(email);
     }
 
