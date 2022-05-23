@@ -13,9 +13,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=mysecretpassword
       - POSTGRES_DATABASE=dan
-      # - APP_DB_USER=docker
-      # - APP_DB_PASS=docker
-      # - APP_DB_NAME=docker
     ports:
       # - '5432:5432'
       - '5433:5432'

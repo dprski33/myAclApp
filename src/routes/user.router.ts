@@ -80,7 +80,7 @@ router.put("/:id",
             // Finds the validation errors in this request and wraps them in an object with handy functions
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                console.log(`uh oh, we got errors on the create user request! ${errors.array()[0]}`)
+                console.log(`uh oh, we got errors on the update user request! ${errors.array()[0]}`)
                 return res.status(400).json({ errors: errors.array() });
             }
             var id = req.params?.id;
