@@ -10,7 +10,9 @@ const dbConfig: DataSourceOptions = {
     password: "mysecretpassword",
     database: "dan",
     entities: [User],
-    synchronize: true
+    synchronize: true,
+    //https://orkhan.gitbook.io/typeorm/docs/logging
+    logging: "all"
 };
 
 export const appDataSource = new DataSource(dbConfig);

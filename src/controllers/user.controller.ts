@@ -1,4 +1,4 @@
-import { Get, Path, Post, Route, Tags, Body } from 'tsoa';
+import { Get, Path, Post, Route, Tags, Body, Query, Put } from 'tsoa';
 import UserService from '../services/user.service';
 import RedisService from '../services/redis.service';
 
@@ -7,8 +7,12 @@ import RedisService from '../services/redis.service';
 export default class UserController {
 
     @Get("/")
-    public async getUsers() {
+    public async getUsers(@Query() limit?: number, @Query() offset?: number) {
         console.log("in user.controller/getUsers");
+        if(limit || offset) {
+            console.log(`Ignoring redis cache since we got limit=${limit} and offset=${offset}`);
+            return UserService.list(Number(limit), Number(offset));
+        }
         return await RedisService.checkCache('users')
             .then( async function(cachedUsers) {
 
@@ -20,7 +24,7 @@ export default class UserController {
 
                 //call the service if not found
                 console.log(`did not find users in redis Cache`);
-                return UserService.list()
+                return UserService.list(Number(limit), Number(offset))
                     .then( function(resp) { 
                         console.log(`got back to user.controller/getUsers`);
                         return resp;
@@ -81,7 +85,7 @@ export default class UserController {
 
     @Post("/")
     public async createUser(@Body() body: any) {
-        console.log(`in user.controller/post with body=${body}`);
+        console.log(`in user.controller/createUser with body=${body}`);
         return UserService.create(body)
             .then(function(user) {
                 if(user) {
@@ -91,4 +95,18 @@ export default class UserController {
                 return user;
             });
     }
+
+    @Put("/:id")
+    public async updateUser(@Path() id: string, @Body() body: any) {
+        console.log(`in user.controller/updateUser with id=${id} and body=${body}`);
+        return UserService.putById(Number(id), body)
+            .then(function(user) {
+                if(user) {
+                    console.log(`Clearing caches since we updated user id=${id}`);
+                    RedisService.deleteRedisKey('users');
+                    RedisService.deleteRedisKey(`user:${id}`);
+                }
+                return user;
+            });
+        }
 }

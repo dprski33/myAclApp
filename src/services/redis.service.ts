@@ -25,7 +25,7 @@ class RedisService {
             return null;
         }
         if(redisClientAvailable && redisClient) {
-            console.log(`attempting to cache response since redisClientAvailable: ${redisClientAvailable}`);
+            console.log(`attempting to cache ${key} response since redisClientAvailable: ${redisClientAvailable}`);
             if(!!thing) {
                 //cache the response in redis
                 console.log(`Caching '${key}' data: ${thing.toString()}`);
