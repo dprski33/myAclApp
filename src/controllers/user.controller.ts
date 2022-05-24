@@ -1,12 +1,13 @@
 import { Get, Path, Post, Route, Tags, Body, Query, Put } from 'tsoa';
 import UserService from '../services/user.service';
 import RedisService from '../services/redis.service';
+import { IUserCreatePayload, IUserUpdatePayload } from '../repositories/user.repository';
 
 @Route("users")
 @Tags("User")
 export default class UserController {
 
-    @Get("/")
+    @Get()
     public async getUsers(@Query() limit?: number, @Query() offset?: number) {
         console.log("in user.controller/getUsers");
         if(limit || offset) {
@@ -30,11 +31,14 @@ export default class UserController {
                         return resp;
                     })
 
-                    //cache the resp since it wasn't already in redis
+                    //try to cache the resp since it wasn't in redis
                     .then(function(users) {
                         //on the off chance we have no users (yet)
-                        if(!users) return null;
-
+                        if(!users || users.keys.length === 0) {
+                            console.log(`No users in the system yet, so we aren't caching anything`);   
+                            return users;
+                        }
+                        //we found at least 1 user in the system, so cache the resp
                         console.log(`users found: ${users[0]?.email}`);
                         return RedisService.cacheInRedis('users', users)
                             .then( async function(cacheSuccessful) {
@@ -83,8 +87,8 @@ export default class UserController {
                 })
     }
 
-    @Post("/")
-    public async createUser(@Body() body: any) {
+    @Post()
+    public async createUser(@Body() body: IUserCreatePayload) {
         console.log(`in user.controller/createUser with body=${body}`);
         return UserService.create(body)
             .then(function(user) {
@@ -97,7 +101,7 @@ export default class UserController {
     }
 
     @Put("/:id")
-    public async updateUser(@Path() id: string, @Body() body: any) {
+    public async updateUser(@Path() id: string, @Body() body: IUserUpdatePayload) {
         console.log(`in user.controller/updateUser with id=${id} and body=${body}`);
         return UserService.putById(Number(id), body)
             .then(function(user) {

@@ -1,12 +1,11 @@
-import { response } from "express";
-import { off } from "process";
 import {
     getUsers,
-    IUserPayload,
     getUser,
     createUser,
     getUserByEmail,
-    updateUser
+    updateUser,
+    IUserCreatePayload,
+    IUserUpdatePayload
 } from "../repositories/user.repository";
 
 class UserService {
@@ -21,7 +20,7 @@ class UserService {
         return getUser(id);
     }
 
-    async create(body: IUserPayload) {
+    async create(body: IUserCreatePayload) {
         console.log(`in user.service creating user email=${body.email}`);
         return createUser(body);
     }
@@ -31,7 +30,7 @@ class UserService {
         return getUserByEmail(email);
     }
 
-    async putById(id: number, body: IUserPayload) {
+    async putById(id: number, body: IUserUpdatePayload) {
         console.log(`in user.service updating user id=${body.id}`);
         try {
             return updateUser(id, body);

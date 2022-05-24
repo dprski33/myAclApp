@@ -1,6 +1,17 @@
-import { UpdateResult, FindManyOptions } from "typeorm";
+import { FindManyOptions } from "typeorm";
 import { appDataSource } from '../index';
 import { User } from '../models/user.model';
+
+export interface IUserCreatePayload {
+    name: string,
+    email: string
+}
+
+export interface IUserUpdatePayload {
+    id: number,
+    name: string,
+    email: string
+}
 
 export interface IUserPayload {
     id: number,
@@ -17,12 +28,8 @@ export const getUsers = async (limit?: number, offset?: number): Promise<Array<U
 
     const where: FindManyOptions<User>[] | FindManyOptions<User> = {};
 
-    if(limit) {
-        where.take = limit;
-    }
-    if(offset) {
-        where.skip = offset;
-    }
+    if(limit) where.take = limit;
+    if(offset) where.skip = offset;
 
     const users = userRepository.find(where);
 
@@ -39,7 +46,7 @@ export const getUser = async (id: number): Promise<User | null> => {
     return user;
 };
 
-export const createUser = async (payload: IUserPayload): Promise<User | null> => {
+export const createUser = async (payload: IUserCreatePayload): Promise<User | null> => {
     console.log(`in user repository creating user email=${payload.email}`);
     const user = new User();
     return userRepository.save({
@@ -47,7 +54,7 @@ export const createUser = async (payload: IUserPayload): Promise<User | null> =>
       ...payload,
     });
 }
-export const updateUser = async(id: number, payload: IUserPayload): Promise<User | null> => {
+export const updateUser = async(id: number, payload: IUserUpdatePayload): Promise<User | null> => {
     const user = getUser(id);
     if(!user) return null;
     userRepository.update(id, payload);
