@@ -52,7 +52,7 @@ export default class UserController {
     }
         
 
-    @Get("/:id")
+    @Get(":id")
     public async getUser(@Path() id: string) {
         console.log(`in user.controller/getUser(id=${id})`);
         return await RedisService.checkCache(`user:${id}`)
@@ -88,9 +88,9 @@ export default class UserController {
     }
 
     @Post()
-    public async createUser(@Body() body: IUserCreatePayload) {
-        console.log(`in user.controller/createUser with body=${body}`);
-        return UserService.create(body)
+    public async createUser(@Body() requestBody: IUserCreatePayload) {
+        console.log(`in user.controller/createUser with body=${requestBody}`);
+        return UserService.create(requestBody)
             .then(function(user) {
                 if(user) {
                     console.log(`Clearing cache since we added a new user id=${user.id}`);
@@ -100,10 +100,10 @@ export default class UserController {
             });
     }
 
-    @Put("/:id")
-    public async updateUser(@Path() id: string, @Body() body: IUserUpdatePayload) {
-        console.log(`in user.controller/updateUser with id=${id} and body=${body}`);
-        return UserService.putById(Number(id), body)
+    @Put(":id")
+    public async updateUser(@Path() id: string, @Body() requestBody: IUserUpdatePayload) {
+        console.log(`in user.controller/updateUser with id=${id} and body=${requestBody}`);
+        return UserService.putById(Number(id), requestBody)
             .then(function(user) {
                 if(user) {
                     console.log(`Clearing caches since we updated user id=${id}`);

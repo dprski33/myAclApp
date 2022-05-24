@@ -8,7 +8,6 @@ export interface IUserCreatePayload {
 }
 
 export interface IUserUpdatePayload {
-    id: number,
     name: string,
     email: string
 }
@@ -39,33 +38,38 @@ export const getUsers = async (limit?: number, offset?: number): Promise<Array<U
 
 export const getUser = async (id: number): Promise<User | null> => {
     console.log(`in user repository looking for user id=${id}`);
-    const user = await userRepository.findOne({ 
+    return await userRepository.findOne({ 
         where: { id: id } 
     });
-    if(!user) return null;
-    return user;
+    // if(!user) return null;
+    // return user as User;
 };
 
 export const createUser = async (payload: IUserCreatePayload): Promise<User | null> => {
     console.log(`in user repository creating user email=${payload.email}`);
     const user = new User();
-    return userRepository.save({
+    return await userRepository.save({
       ...user,
       ...payload,
     });
 }
+
 export const updateUser = async(id: number, payload: IUserUpdatePayload): Promise<User | null> => {
+    console.log(`in user repository updating user id=${id}`);
     const user = getUser(id);
     if(!user) return null;
-    userRepository.update(id, payload);
-    return getUser(id);
+    await userRepository.update(id, {
+        ...user,
+        ...payload
+    });
+    return await getUser(id) as User;
 }
 
 export const getUserByEmail = async(email: string): Promise<User | null> => {
     console.log(`in user repository finding user email=${email}`);
-    const user = await userRepository.findOne({ 
+    return await userRepository.findOne({ 
         where: { email: email } 
     });
-    if(!user) return null;
-    return user;
+    // if(!user) return null;
+    // return user as User;
 }

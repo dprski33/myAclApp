@@ -31,14 +31,14 @@ class UserService {
     }
 
     async putById(id: number, body: IUserUpdatePayload) {
-        console.log(`in user.service updating user id=${body.id}`);
-        try {
+        console.log(`in user.service updating user id=${id}`);
+        // try {
             return updateUser(id, body);
-        }
-        catch(err) {
-            console.log(`Error updating user id=${id}`, err)
-            return err;
-        }
+        // }
+        // catch(err) {
+        //     console.log(`Error updating user id=${id}`, err)
+        //     return err;
+        // }
     }
 
 }
