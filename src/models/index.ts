@@ -1,2 +1,3 @@
 import { User } from "./user.model";
-export { User };
+import { Role } from './role.model';
+export { User, Role };

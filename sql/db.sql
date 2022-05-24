@@ -12,3 +12,22 @@ CREATE TABLE IF NOT EXISTS dan_user (
   last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO dan_user (name, email)
+VALUES
+    ('John', 'john@gmail.com'),
+    ('Jane', 'jane@hotmail.com'),
+    ('Jim', 'james@yahoo.net');
+
+DROP TABLE IF EXISTS role;
+CREATE TABLE IF NOT EXISTS role (
+  id serial PRIMARY KEY,
+  name VARCHAR(40) UNIQUE NOT NULL,
+  description VARCHAR(255) UNIQUE NOT NULL
+);
+
+INSERT INTO role (name, description) 
+VALUES
+  ('ROLE_USER', 'User'),
+  ('ROLE_ADMIN', 'Admin'),
+  ('ROLE_SUPER_ADMIN', 'Super Admin'),
+  ('ROLE_MEMBER', 'Member');

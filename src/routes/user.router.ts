@@ -1,7 +1,6 @@
 import express from "express";
 import UserController from "../controllers/user.controller";
 import UserMiddleware from "../middleware/user.middleware";
-import UserService from "../services/user.service";
 import { body, validationResult, param } from 'express-validator';
 
 

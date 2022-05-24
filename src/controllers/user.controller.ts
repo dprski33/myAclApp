@@ -31,18 +31,21 @@ export default class UserController {
                         return resp;
                     })
 
-                    //try to cache the resp since it wasn't in redis
+                    /* try to cache the resp since it wasn't in redis */
                     .then(function(users) {
-                        //on the off chance we have no users (yet)
-                        if(!users || users.keys.length === 0) {
+                        console.log(`users? ${users?.length}`);
+
+                        /* on the off chance we have no users (yet) */
+                        if(!users || users.length === 0) {
                             console.log(`No users in the system yet, so we aren't caching anything`);   
                             return users;
                         }
-                        //we found at least 1 user in the system, so cache the resp
+
+                        /* we found at least 1 user in the system, so cache the resp */
                         console.log(`users found: ${users[0]?.email}`);
                         return RedisService.cacheInRedis('users', users)
                             .then( async function(cacheSuccessful) {
-                                if(!!cacheSuccessful) return users;
+                                if(cacheSuccessful?.length === 0) return users;
 
                                 console.log(`users cached successfully: ${cacheSuccessful}`);
                                 return users;

@@ -1,5 +1,5 @@
 import { DataSourceOptions, DataSource } from "typeorm";
-import { User } from "../src/models";
+import { User, Role } from "../src/models";
 
 const dbConfig: DataSourceOptions = {
     type: "postgres",
@@ -9,8 +9,10 @@ const dbConfig: DataSourceOptions = {
     username: "postgres",
     password: "mysecretpassword",
     database: "dan",
-    entities: [User],
-    synchronize: true,
+    entities: [User, Role],
+
+    //only set to true if we aren't seeding the db via docker compose
+    synchronize: false,
     //https://orkhan.gitbook.io/typeorm/docs/logging
     logging: "all"
 };

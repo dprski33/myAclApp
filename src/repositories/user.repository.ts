@@ -55,7 +55,7 @@ export const createUser = async (payload: IUserCreatePayload): Promise<User | nu
 }
 
 export const updateUser = async(id: number, payload: IUserUpdatePayload): Promise<User | null> => {
-    console.log(`in user repository updating user id=${id}`);
+    console.log(`in user repository updating user email=${payload.email}`);
     const user = getUser(id);
     if(!user) return null;
     await userRepository.update(id, {

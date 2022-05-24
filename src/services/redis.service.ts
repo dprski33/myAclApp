@@ -1,6 +1,9 @@
 import { redisClientAvailable, redisClient } from "../index";
 
 class RedisService {
+
+    DEFAULT_TTL_VALUE = 60 * 60 * 2; //2 hours
+
     async checkCache(key: string) {
         if(!redisClientAvailable) {
             console.log(`cannot check ${key} cache because redisClientAvailable=${redisClientAvailable}`);
@@ -10,7 +13,7 @@ class RedisService {
             console.log(`Looking for redis key: ${key}`);
             const redisObj = await redisClient.get(key);
             console.log(`redisObj: ${redisObj}`);
-            if(redisObj?.length == 0)  {
+            if(redisObj?.length === 0)  {
                 console.log(`Did not find redis cache key ${key}`);
                 return null;
             }
@@ -19,7 +22,10 @@ class RedisService {
         }
     }
 
-    async cacheInRedis(key: string, thing: any) {
+    /*
+        sets a cache key for `ttl` number of seconds
+    */
+    async cacheInRedis(key: string, thing: any, ttl?: number) {
         if(!redisClientAvailable) {
             console.log(`will not cache '${key}' because redisClientAvailable=${redisClientAvailable}`);
             return null;
@@ -27,9 +33,16 @@ class RedisService {
         if(redisClientAvailable && redisClient) {
             console.log(`attempting to cache ${key} response since redisClientAvailable: ${redisClientAvailable}`);
             if(!!thing) {
+
+                const ttlToSet = ttl || this.DEFAULT_TTL_VALUE;
+                
                 //cache the response in redis
                 console.log(`Caching '${key}' data: ${thing.toString()}`);
-                await redisClient.set(key, JSON.stringify(thing));
+                
+                await redisClient.set(key, JSON.stringify(thing), { 
+                    EX: ttlToSet
+                });
+
                 const redisObj = await redisClient.get(key);
                 if(redisObj?.length == 0)  {
                     console.log(`Did not proparly cache key ${key}`);
