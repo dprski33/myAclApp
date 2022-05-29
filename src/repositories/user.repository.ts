@@ -17,7 +17,7 @@ export interface IUserPayload {
     name: string,
     email: string,
     dateCreated: Date,
-    lastUpdated: Date
+    lastUpdated: Date,
 }
 
 const userRepository = appDataSource.manager.getRepository(User);
@@ -39,10 +39,9 @@ export const getUsers = async (limit?: number, offset?: number): Promise<Array<U
 export const getUser = async (id: number): Promise<User | null> => {
     console.log(`in user repository looking for user id=${id}`);
     return await userRepository.findOne({ 
-        where: { id: id } 
+        where: { id: id }, 
     });
-    // if(!user) return null;
-    // return user as User;
+    
 };
 
 export const createUser = async (payload: IUserCreatePayload): Promise<User | null> => {

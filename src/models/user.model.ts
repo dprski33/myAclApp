@@ -5,7 +5,9 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BaseEntity,
+    OneToMany
 } from "typeorm";
+import { UserRole } from "./userRole.model";
 
 @Entity("dan_user")
 export class User extends BaseEntity {
@@ -15,11 +17,14 @@ export class User extends BaseEntity {
     // @Column()
     // firstName!: string;
 
-    @Column()
+    @Column({ nullable: false })
     name!: string;
 
-    @Column()
+    @Column('text', { unique: true, nullable: false })
     email!: string;
+
+    @OneToMany(type => UserRole, role => role.user) //() => UserRole, (role) => role.user, {eager: true})
+    roles!: UserRole[] | null;
 
     @CreateDateColumn()
     date_created!: Date;

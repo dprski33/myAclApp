@@ -1,6 +1,7 @@
 import { Get, Path, Post, Route, Tags, Body, Query, Put } from 'tsoa';
 import UserService from '../services/user.service';
 import RedisService from '../services/redis.service';
+import UserRoleService from '../services/userRole.service';
 import { IUserCreatePayload, IUserUpdatePayload } from '../repositories/user.repository';
 
 @Route("users")
@@ -116,4 +117,16 @@ export default class UserController {
                 return user;
             });
         }
+    
+    @Get(":id/roles")
+    public async getUserRoles(@Path() id: string) {
+        return UserRoleService.readByUserId(Number(id))
+            .then(function(userRoles) {
+                if(userRoles) {
+                    console.log(`Found these roles for user id=${id}: ${userRoles}`);
+                }
+                return userRoles;
+            });
+            
+    }
 }

@@ -66,4 +66,19 @@ router.put("/:id",
         return res.send(response);
     });
 
+router.get("/:id/roles",
+    param('id').isNumeric(),
+    async (req, res) => {
+        var id = req.params?.id;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.mapped() });
+        }
+        const response = await controller.getUserRoles(id);
+        if(!response) { 
+            return res.status(404).send( { message: `No user found with id=${id}`} );
+        }
+        return res.send(response);
+    });
+
 export default router;

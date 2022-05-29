@@ -1,5 +1,5 @@
 import { DataSourceOptions, DataSource } from "typeorm";
-import { User, Role } from "../src/models";
+import { User, Role, UserRole } from "../src/models";
 
 const dbConfig: DataSourceOptions = {
     type: "postgres",
@@ -9,7 +9,11 @@ const dbConfig: DataSourceOptions = {
     username: "postgres",
     password: "mysecretpassword",
     database: "dan",
-    entities: [User, Role],
+    entities: [
+        User, 
+        Role,
+        UserRole
+    ],
 
     //only set to true if we aren't seeding the db via docker compose
     synchronize: false,

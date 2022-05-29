@@ -31,3 +31,19 @@ VALUES
   ('ROLE_ADMIN', 'Admin'),
   ('ROLE_SUPER_ADMIN', 'Super Admin'),
   ('ROLE_MEMBER', 'Member');
+
+DROP TABLE IF EXISTS user_role;
+CREATE TABLE IF NOT EXISTS user_role (
+  user_id BIGINT NOT NULL,
+  role_id BIGINT NOT NULL,
+  date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO user_role(user_id, role_id) 
+VALUES
+  ((SELECT id FROM dan_user WHERE email='john@gmail.com'),(SELECT id FROM role WHERE name='ROLE_USER')),
+  ((SELECT id FROM dan_user WHERE email='jane@hotmail.com'),(SELECT id FROM role WHERE name='ROLE_USER')),
+  ((SELECT id FROM dan_user WHERE email='jane@hotmail.com'),(SELECT id FROM role WHERE name='ROLE_ADMIN')),
+  ((SELECT id FROM dan_user WHERE email='jane@hotmail.com'),(SELECT id FROM role WHERE name='ROLE_SUPER_ADMIN')),
+  ((SELECT id FROM dan_user WHERE email='james@yahoo.net'),(SELECT id FROM role WHERE name='ROLE_MEMBER'));
